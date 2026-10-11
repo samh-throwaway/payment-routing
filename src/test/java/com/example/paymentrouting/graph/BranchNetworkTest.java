@@ -5,9 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class BranchNetworkTest {
 
@@ -142,6 +144,42 @@ class BranchNetworkTest {
 
             // then
             assertThat(fee).isZero();
+        }
+    }
+
+    @Nested
+    class Immutability {
+
+        @Test
+        void givenSpecNetwork_whenAddingToAnOutgoingList_thenItIsRejected() {
+            // given
+            BranchNetwork network = BranchNetwork.of(SPEC_BRANCHES, SPEC_LINKS);
+
+            // when - then
+            List<String> outgoingA = network.outgoing("A");
+            assertThatThrownBy(() -> outgoingA.add("X")).isInstanceOf(UnsupportedOperationException.class);
+        }
+
+        @Test
+        void givenNetworkBuiltFromMutableLists_whenTheListsAreChangedAfterwards_thenNetworkIsUnaffected() {
+            // given
+            List<Branch> branches = new ArrayList<>();
+            branches.add(new Branch("A", 5));
+            branches.add(new Branch("B", 10));
+            branches.add(new Branch("C", 20));
+            List<Link> links = new ArrayList<>();
+            links.add(new Link("A", "C"));
+            links.add(new Link("B", "C"));
+
+            BranchNetwork network = BranchNetwork.of(branches, links);
+
+            // when
+            branches.add(new Branch("E", 10));
+            links.add(new Link("A", "E"));
+
+            // then
+            assertThat(network.outgoing("A")).containsExactly("C");
+            assertThat(network.outgoing("A").contains("E")).isFalse();
         }
     }
 }
