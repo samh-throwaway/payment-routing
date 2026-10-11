@@ -3,13 +3,13 @@ package com.example.paymentrouting.graph;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/** Thrown when the branches and links used to build a BranchNetwork
+/** Thrown when the branches and links used to build a {@link BranchNetwork}
  * are invalid.
  *
  * <p>Carries every problem found rather than only the first, so that
  * whoever fixes the data can correct all of them in one pass. This is
- * a startup failure, unrelated to individual payment requests.</p>
- * */
+ * a startup failure, unrelated to individual payment requests.
+ */
 public final class InvalidNetworkException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public final class InvalidNetworkException extends RuntimeException {
     }
 
     /**
-     * Returns the individual validation errors, in the order they were found.
+     * Returns the validation errors, in the order they were found.
      *
      * @return an unmodifiable list of error messages.
      */
@@ -38,12 +38,12 @@ public final class InvalidNetworkException extends RuntimeException {
         return errors;
     }
 
-    /**Formats the errors as a header line followed by one indented line per error. */
+    /** Formats the errors as a header line followed by one indented line per error. */
     private static String buildMessage(List<String> errors) {
         String header = "Invalid branch network (" + errors.size()
                 + (errors.size() == 1 ? " error):" : " errors):");
         return errors.stream()
-                .map(error -> System.lineSeparator() + " - " + error)
+                .map(error -> System.lineSeparator() + "  -  " + error)
                 .collect(Collectors.joining("", header, ""));
     }
 }
