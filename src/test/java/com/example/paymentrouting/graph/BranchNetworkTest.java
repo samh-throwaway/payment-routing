@@ -171,7 +171,8 @@ class BranchNetworkTest {
 
             // when - then
             List<String> outgoingA = network.outgoing("A");
-            assertThatThrownBy(() -> outgoingA.add("X")).isInstanceOf(UnsupportedOperationException.class);
+            assertThatThrownBy(() -> outgoingA.add("X"))
+                    .isInstanceOf(UnsupportedOperationException.class);
         }
 
         @Test
@@ -193,7 +194,6 @@ class BranchNetworkTest {
 
             // then
             assertThat(network.outgoing("A")).containsExactly("C");
-            assertThat(network.outgoing("A").contains("E")).isFalse();
         }
     }
 
@@ -345,7 +345,179 @@ class BranchNetworkTest {
             // then
             assertThat(errors).containsExactly("branches[0]: fee -1 of 'A' must not be negative");
         }
-
-
     }
+
+    @Nested
+    class LinksValidation {
+
+        @Test
+        void givenInvalidLinks_whenLinksAreNull_thenReportsNoLinks() {
+            // given
+            List<Link> links = null;
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5)), links);
+
+            // then
+            assertThat(errors).containsExactly("links are missing; use an empty list" +
+                    " for a network without links");
+        }
+
+        @Test
+        void givenInvalidLinks_whenLinkIsMissing_thenReportsMissingLink() {
+            // given
+            List<Link> links = Arrays.asList(new Link("A", "B"), null);
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[1]: link is missing");
+        }
+
+        @Test
+        void givenInvalidLinks_whenMissingFromBranchId_thenReportsMissingLink() {
+            // given
+            List<Link> links = List.of(new Link(null, "B"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from is missing");
+        }
+
+        @Test
+        void givenInvalidLinks_whenMissingToBranchId_thenReportsMissingLink() {
+            // given
+            List<Link> links = List.of(new Link("A", null));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: to is missing");
+        }
+
+        @Test
+        void givenInvalidLinks_whenFromBranchIdIsNotKnown_thenReportsUnknownLink() {
+            // given
+            List<Link> links = List.of(new Link("X", "B"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from 'X' is not known");
+        }
+
+        @Test
+        void givenInvalidLinks_whenToBranchIdIsNotKnown_thenReportsUnknownLink() {
+            // given
+            List<Link> links = List.of(new Link("A", "Y"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: to 'Y' is not known");
+        }
+
+        @Test
+        void givenInvalidLinks_whenSelfLink_thenReportsSelfLink() {
+            // given
+            List<Link> links = List.of(new Link("A", "A"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: branch 'A' cannot link to itself");
+        }
+
+        @Test
+        void givenInvalidLinks_whenDuplicateLinkPairs_thenReportsDuplicateLink() {
+            // given
+            List<Link> links = List.of(new Link("A", "B"), new Link("A", "B"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[1]: duplicate link 'A' -> 'B'");
+        }
+
+        @Test
+        void givenBranchWithMalformedId_whenLinkReferencesIt_thenOnlyTheBranchErrorIsReported() {
+            // given
+            List<Link> links = List.of(new Link("a", "B"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("a", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).singleElement(STRING).startsWith("branches[0]: id 'a' is invalid");
+        }
+
+        @Test
+        void givenInvalidLinks_whenNullFromAndTo_thenReportsBothMissingBranches() {
+            // given
+            List<Link> links = List.of(new Link(null, null));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from is missing",
+                    "links[0]: to is missing");
+        }
+
+        @Test
+        void givenInvalidLinks_whenUnknownFromAndTo_thenReportsBothUnknownBranches() {
+            // given
+            List<Link> links = List.of(new Link("X", "Y"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from 'X' is not known",
+                    "links[0]: to 'Y' is not known");
+        }
+
+        @Test
+        void givenInvalidLinks_whenMissingFromAndUnknownTo_thenReportsMissingFromAndUnknownTo() {
+            // given
+            List<Link> links = List.of(new Link(null, "Y"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from is missing",
+                    "links[0]: to 'Y' is not known");
+        }
+
+        @Test
+        void givenSelfLinkOnUnknownBranch_whenBuildingNetwork_thenOnlyUnknownBranchIsReported() {
+            // given
+            List<Link> links = List.of(new Link("X", "X"));
+
+            // when
+            List<String> errors = errorsFor(List.of(new Branch("A", 5),
+                    new Branch("B", 10)), links);
+
+            // then
+            assertThat(errors).containsExactly("links[0]: from 'X' is not known",
+                    "links[0]: to 'X' is not known");
+        }
+    }
+
+
 }

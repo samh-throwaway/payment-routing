@@ -104,6 +104,9 @@ public final class BranchNetwork {
 
     /**
      * Checks every link and returns the outgoing branch ids for each branch.
+     * Every problem with a link is reported; the self-link and duplicate checks
+     * only run once both ends are valid.
+     *
      * Problems are added to {@code errors} rather than thrown. The TreeSet sorts the
      * targets by id and its {@code add} result detects duplicate links.
      */
@@ -126,19 +129,10 @@ public final class BranchNetwork {
             String from = link.from();
             String to = link.to();
 
-            if (from == null) {
-                errors.add(where + ": from is missing");
-                continue;
-            } else if (!knownIds.contains(from)) {
-                errors.add(where + ": from '" + from + "' is not known");
-                continue;
-            }
+            boolean fromOk = checkEndpoint(from, "from", where, knownIds, errors);
+            boolean toOk = checkEndpoint(to, "to", where, knownIds, errors);
 
-            if (to == null) {
-                errors.add(where + ": to is missing");
-                continue;
-            } else if (!knownIds.contains(to)) {
-                errors.add(where + ": to '" + to + "' is not known");
+            if (!fromOk || !toOk) {
                 continue;
             }
 
@@ -220,5 +214,19 @@ public final class BranchNetwork {
             throw new IllegalArgumentException("node with id " + id + " not found");
         }
         return node;
+    }
+
+    /** Checks whether the endpoint branch exists in the BranchNetwork. Returns true if does, false if
+     * id is null or BranchNetwork doesn't contain the Branch ID.*/
+    private static boolean checkEndpoint(String id, String field, String where, Set<String> knownIds,
+                                         List<String> errors) {
+        if (id == null) {
+            errors.add(where + ": " + field + " is missing");
+            return false;
+        } else if (!knownIds.contains(id)) {
+            errors.add(where + ": " + field + " '" + id + "' is not known");
+            return false;
+        }
+        return true;
     }
 }
