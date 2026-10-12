@@ -62,13 +62,18 @@ public final class DijkstraRouteFinder implements RouteFinder {
             throw new IllegalArgumentException("Unknown destination branch: " + destination);
         }
 
-        PriorityQueue<QueueEntry> queue = new PriorityQueue<>(Comparator.comparingLong(QueueEntry::cost));
+        PriorityQueue<QueueEntry> queue = new PriorityQueue<>(
+                Comparator.comparingLong(QueueEntry::cost)
+                .thenComparingInt(QueueEntry::hops)
+                .thenComparing(QueueEntry::branch));
         Map<String, Long> cost = new HashMap<>();
         Set<String> settled = new HashSet<>();
         Map<String, String> cameFrom = new HashMap<>();
+        Map<String, Integer> hops = new HashMap<>();
 
-        queue.add(new QueueEntry(origin, 0));
+        queue.add(new QueueEntry(origin, 0, 0));
         cost.put(origin, 0L);
+        hops.put(origin, 0);
 
         while (!queue.isEmpty()) {
             QueueEntry current = queue.poll();
@@ -88,10 +93,14 @@ public final class DijkstraRouteFinder implements RouteFinder {
                     continue;
                 }
                 Long known = cost.get(neighbour);
-                if (known == null || newCost < known) {
+                int newHops = current.hops() + 1;
+                // equal cost: prefer fewer hops
+                if (known == null || newCost < known || (newCost == known &&
+                        newHops < hops.get(neighbour))) {
                     cost.put(neighbour, newCost);
                     cameFrom.put(neighbour, current.branch());
-                    queue.add(new QueueEntry(neighbour, newCost));
+                    hops.put(neighbour, newHops);
+                    queue.add(new QueueEntry(neighbour, newCost, newHops));
                 }
             }
         }
@@ -111,6 +120,7 @@ public final class DijkstraRouteFinder implements RouteFinder {
     /** One item in the priority queue: the cost of reaching {@code branch} by
      * some route found so far. It is a snapshot. If a cheaper route to the
      * branch is found later, a new entry is queued and this one becomes
-     * stale; it is skipped when polled.*/
-    private record QueueEntry (String branch, long cost) {}
+     * stale; it is skipped when polled. hops is the number of links
+     * used to reach the branch;it breaks ties between equal costs.*/
+    private record QueueEntry (String branch, long cost, int hops) {}
 }

@@ -107,7 +107,7 @@ public final class BranchNetwork {
      * Every problem with a link is reported; the self-link and duplicate checks
      * only run once both ends are valid.
      *
-     * Problems are added to {@code errors} rather than thrown. The TreeSet sorts the
+     * <p>Problems are added to {@code errors} rather than thrown. The TreeSet sorts the
      * targets by id and its {@code add} result detects duplicate links.
      */
     private static Map<String, SortedSet<String>> validateLinks(
