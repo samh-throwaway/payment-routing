@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
 class BranchNetworkTest {
@@ -505,7 +506,7 @@ class BranchNetworkTest {
         }
 
         @Test
-        void givenSelfLinkOnUnknownBranch_whenBuildingNetwork_thenOnlyUnknownBranchIsReported() {
+        void givenInvalidLinks_whenSelfLinkOnUnknownBranch_thenReportsOnlyUnknownBranch() {
             // given
             List<Link> links = List.of(new Link("X", "X"));
 
@@ -519,5 +520,63 @@ class BranchNetworkTest {
         }
     }
 
+    @Nested
+    class ErrorReporting {
 
+        @Test
+        void givenInvalidNetwork_whenNetworkContainsInvalidFeesAndLinks_thenMultipleErrorsReported() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", 1), new Branch("A", 2),
+                    new Branch("B", -5));
+            List<Link> links = List.of(new Link("A", "Z"), new Link("B", "B"), new Link("A", "B"),
+                    new Link("A", "B"));
+
+            // when
+            List<String> errors = errorsFor(branches, links);
+
+            // then
+            assertThat(errors).containsExactly(
+                    "branches[1]: duplicate branch id 'A'",
+                    "branches[2]: fee -5 of 'B' must not be negative",
+                    "links[0]: to 'Z' is not known",
+                    "links[1]: branch 'B' cannot link to itself",
+                    "links[3]: duplicate link 'A' -> 'B'"
+            );
+        }
+
+        @Test
+        void givenTwoProblems_whenBuildingNetwork_thenMessageCountsErrorsInPlural() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", -5));
+            List<Link> links = List.of(new Link("A", "B"));
+
+            // when
+            InvalidNetworkException exception = catchThrowableOfType(
+                    InvalidNetworkException.class,
+                    () -> BranchNetwork.of(branches, links));
+
+            // then
+            assertThat(exception.getMessage())
+                    .startsWith("Invalid branch network (2 errors):")
+                    .contains("branches[0]: fee -5 of 'A' must not be negative")
+                    .contains("links[0]: to 'B' is not known");
+        }
+
+        @Test
+        void givenOneProblem_whenBuildingNetwork_thenMessageUsesSingular() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", -5), new Branch("B", 1));
+            List<Link> links = List.of(new Link("A", "B"));
+
+            // when
+            InvalidNetworkException exception = catchThrowableOfType(
+                    InvalidNetworkException.class,
+                    () -> BranchNetwork.of(branches, links));
+
+            // then
+            assertThat(exception.getMessage())
+                    .startsWith("Invalid branch network (1 error):")
+                    .contains("branches[0]: fee -5 of 'A' must not be negative");
+        }
+    }
 }
