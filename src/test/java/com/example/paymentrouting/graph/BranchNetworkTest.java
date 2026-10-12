@@ -4,12 +4,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 
 class BranchNetworkTest {
 
@@ -21,6 +24,17 @@ class BranchNetworkTest {
             new Link("A", "B"), new Link("A", "C"), new Link("C", "B"),
             new Link("B", "D"), new Link("C", "E"), new Link("D", "E"),
             new Link("E", "D"), new Link("D", "F"), new Link("E", "F"));
+
+    /** Builds a network that must be rejected, and returns the errors it was rejected with. */
+    private static List<String> errorsFor(List<Branch> branches, List<Link> links) {
+        try {
+            BranchNetwork.of(branches, links);
+        } catch (InvalidNetworkException e) {
+            return e.errors();
+        }
+
+        throw new AssertionError("expected the network to be rejected");
+    }
 
     @Nested
     class ValidNetwork {
@@ -229,5 +243,109 @@ class BranchNetworkTest {
                     .isInstanceOf(NullPointerException.class)
                     .hasMessageContaining("id must not be null");
         }
+    }
+
+    @Nested
+    class BranchValidation {
+
+        @Test
+        void givenInvalidNetwork_whenBranchesIsNull_thenReportsNoBranches() {
+            // given
+            List<Branch> branches = null;
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches must contain at least one branch");
+        }
+
+        @Test
+        void givenInvalidNetwork_whenBranchesIsEmpty_thenReportsNoBranches() {
+            // given
+            List<Branch> branches = List.of();
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches must contain at least one branch");
+        }
+
+        @Test
+        void givenInvalidNetwork_whenBranchIsMissingFromNetwork_thenReportsMissingBranchId() {
+            // given
+            List<Branch> branches = Arrays.asList(new Branch("A", 1), null);
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches[1]: branch is missing");
+        }
+
+        @Test
+        void givenInvalidNetwork_whenBranchIdIsNull_thenReportsMissingBranchId() {
+            // given
+            List<Branch> branches = List.of(new Branch(null, 1));
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches[0]: id is missing");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"", " ", "a", "A B", " A", "A_B", "A.B", "Ä", "ABCDEFGHIJKLMNOPQRSTU"})
+        void givenInvalidBranchIds_whenBranchIdsAreMalformedInvalid_thenReportsInvalidBranchIds(String branchId) {
+            // given
+            List<Branch> branches = List.of(new Branch(branchId, 1));
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).singleElement(STRING).startsWith("branches[0]: id '" + branchId + "' is invalid");
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"A", "Z9", "BRANCH-01", "ABCDEFGHIJKLMNOPQRST"})
+        void givenValidBranchIds_whenBranchIdsAreValid_thenContainsIsTrue(String branchId) {
+            // given
+            Branch branch = new Branch(branchId, 1);
+
+            // when
+            BranchNetwork network = BranchNetwork.of(List.of(branch), List.of());
+
+            // then
+            assertThat(network.contains(branchId)).isTrue();
+        }
+
+        @Test
+        void givenInvalidNetwork_whenBranchesHaveDuplicateBranchIdEntries_thenReportsDuplicateBranchIds() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", 1), new Branch("A", 2));
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches[1]: duplicate branch id 'A'");
+        }
+
+        @Test
+        void givenInvalidNetwork_whenBranchHasNegativeFee_thenReportsNegativeFee() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", -1));
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).containsExactly("branches[0]: fee -1 of 'A' must not be negative");
+        }
+
+
     }
 }
