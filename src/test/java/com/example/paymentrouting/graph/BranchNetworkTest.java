@@ -182,4 +182,52 @@ class BranchNetworkTest {
             assertThat(network.outgoing("A").contains("E")).isFalse();
         }
     }
+
+    @Nested
+    class Lookups {
+
+        @Test
+        void givenSpecNetwork_whenFetchingFeeOfUnknownBranch_thenIllegalArgumentException() {
+            // given
+            BranchNetwork network = BranchNetwork.of(SPEC_BRANCHES, SPEC_LINKS);
+
+            // when - then
+            assertThatThrownBy(() -> network.fee("Z"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Z");
+        }
+
+        @Test
+        void givenSpecNetwork_whenFetchingFeeOfNullBranch_thenNullPointerException() {
+            // given
+            BranchNetwork network = BranchNetwork.of(SPEC_BRANCHES, SPEC_LINKS);
+
+            // when - then
+            assertThatThrownBy(() -> network.fee(null))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("id must not be null");
+        }
+
+        @Test
+        void givenSpecNetwork_whenFetchingLinksOfUnknownBranch_thenIllegalArgumentException() {
+            // given
+            BranchNetwork network = BranchNetwork.of(SPEC_BRANCHES, SPEC_LINKS);
+
+            // when - then
+            assertThatThrownBy(() -> network.outgoing("Z"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("Z");
+        }
+
+        @Test
+        void givenSpecNetwork_whenFetchingLinksOfNullBranch_thenNullPointerException() {
+            // given
+            BranchNetwork network = BranchNetwork.of(SPEC_BRANCHES, SPEC_LINKS);
+
+            // when - then
+            assertThatThrownBy(() -> network.outgoing(null))
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessageContaining("id must not be null");
+        }
+    }
 }
