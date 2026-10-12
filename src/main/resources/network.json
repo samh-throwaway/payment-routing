@@ -1,0 +1,17 @@
+{
+  "branches": [
+    { "id": "A", "fee": 5 },
+    { "id": "B", "fee": 50 },
+    { "id": "C", "fee": 10 },
+    { "id": "D", "fee": 10 },
+    { "id": "E", "fee": 20 },
+    { "id": "F", "fee": 5 }
+  ],
+  "links": [
+    { "from": "A", "to": "B" }, { "from": "A", "to": "C" },
+    { "from": "C", "to": "B" }, { "from": "B", "to": "D" },
+    { "from": "C", "to": "E" }, { "from": "D", "to": "E" },
+    { "from": "E", "to": "D" }, { "from": "D", "to": "F" },
+    { "from": "E", "to": "F" }
+  ]
+}
