@@ -125,4 +125,20 @@ class DijkstraRouteFinderTest {
         // then
         assertThat(route).isEqualTo(new Route(List.of("A", "Z", "B", "D"), 3));
     }
+
+    @Test
+    void givenSameFinder_whenFindingRoutesRepeatedly_thenResultsDoNotLeakBetweenCalls() {
+        // given
+        DijkstraRouteFinder finder = new DijkstraRouteFinder(TestNetworks.spec());
+
+        // when
+        Route first = finder.find("A", "D");
+        Route second = finder.find("C", "E");
+        Route third = finder.find("A", "D");
+
+        // then
+        assertThat(first).isEqualTo(new Route(List.of("A", "C", "E", "D"), 35));
+        assertThat(second).isEqualTo(new Route(List.of("C", "E"), 10));
+        assertThat(third).isEqualTo(first);
+    }
 }
