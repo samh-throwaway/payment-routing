@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  *
  * <p>Instances can only be created through {@link #of}, which checks the whole input,
  * so any BranchNetwork that exists is valid. Each branch holds its fee and its outgoing
- * links, sorted by id so results never depend on the order of the input file.
+ * links, sorted by id so {@link #outgoing} never depends on the order of the input file.
  *
  * <p>Nothing changes after construction, so one instance can be shared between threads
  * without locking.
@@ -30,7 +30,7 @@ public final class BranchNetwork {
      */
     private static final Pattern BRANCH_FORMAT = Pattern.compile("[A-Z0-9-]{1,20}");
 
-    /** What the network stores for one branch: its fee and the ids it links to.*/
+    /** What the network stores for one branch: its fee and the ids it links to. */
     private record Node(long fee, List<String> outgoing) {
     }
 
@@ -211,7 +211,7 @@ public final class BranchNetwork {
         Objects.requireNonNull(id, "id must not be null");
         Node node = nodes.get(id);
         if (node == null) {
-            throw new IllegalArgumentException("node with id " + id + " not found");
+            throw new IllegalArgumentException("branch with id " + id + " not found");
         }
         return node;
     }
@@ -221,8 +221,8 @@ public final class BranchNetwork {
         return id != null && BRANCH_FORMAT.matcher(id).matches();
     }
 
-    /** Checks whether the endpoint branch exists in the BranchNetwork. Returns true if does, false if
-     * id is null or BranchNetwork doesn't contain the Branch ID.*/
+    /** Checks whether the endpoint branch exists in knownIds. Returns true if it does, false if
+     * id is null or knownIds doesn't contain the Branch ID.*/
     private static boolean checkEndpoint(String id, String field, String where, Set<String> knownIds,
                                          List<String> errors) {
         if (id == null) {

@@ -3,12 +3,12 @@ package com.example.paymentrouting.config;
 /**
  * Thrown when the network definition file cannot be read.
  *
- * <p>This means the file itself is the problem: it is not valid JSON,
- * or its structure does not match what the loader expects. It is different
- * from {@link com.example.paymentrouting.graph.InvalidNetworkException},
+ * <p>This means the file itself is the problem: it cannot be opened, it is not
+ * valid JSON, or its structure does not match what the loader expects. It is
+ * different from {@link com.example.paymentrouting.graph.InvalidNetworkException},
  * which is thrown when the file was read successfully but the network it
- * describes breaks the rules (for example a negative fee or a link to
- * an unknown branch).
+ * describes breaks the rules (for example a negative fee or a link to an
+ * unknown branch).
  *
  * <p>Unchecked, and it always carries the underlying cause (a parser error,
  * or the failure to open the file).

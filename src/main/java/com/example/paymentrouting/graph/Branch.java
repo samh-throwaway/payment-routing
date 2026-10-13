@@ -7,6 +7,6 @@ package com.example.paymentrouting.graph;
  * so that all problems can be reported together.</p>
  *
  * @param id the branch id, e.g. "A"
- * @param fee the fee in the whole currency units charged when a payment leaves this branch
+ * @param fee the fee, in whole currency units, charged when a payment leaves this branch
  * */
 public record Branch(String id, long fee) {}

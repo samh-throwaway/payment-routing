@@ -27,7 +27,7 @@ import java.util.Set;
 public final class DijkstraRouteFinder implements RouteFinder {
 
     /** The immutable, shared, valid graph being worked on in Dijkstra's
-     * algorithm.*/
+     * algorithm. */
     private final BranchNetwork network;
 
     /**
@@ -76,12 +76,12 @@ public final class DijkstraRouteFinder implements RouteFinder {
             long newCost = current.cost() + network.fee(current.branch());
 
             List<String> currentNeighbours = network.outgoing(current.branch());
+            int newHops = current.hops() + 1;
             for (String neighbour : currentNeighbours) {
                 if (settled.contains(neighbour)) {
                     continue;
                 }
                 Long known = cost.get(neighbour);
-                int newHops = current.hops() + 1;
                 // equal cost: prefer fewer hops
                 if (known == null || newCost < known || (newCost == known &&
                         newHops < hops.get(neighbour))) {
@@ -110,5 +110,5 @@ public final class DijkstraRouteFinder implements RouteFinder {
      * branch is found later, a new entry is queued and this one becomes
      * stale; it is skipped when polled. {@code hops} is the number of links
      * used to reach the branch; it breaks ties between equal costs.*/
-    private record QueueEntry (String branch, long cost, int hops) {}
+    private record QueueEntry(String branch, long cost, int hops) {}
 }

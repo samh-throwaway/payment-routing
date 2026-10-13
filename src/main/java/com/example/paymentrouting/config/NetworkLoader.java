@@ -28,8 +28,8 @@ public final class NetworkLoader {
     }
 
     /**
-     * Responsible for taking in the JSON network definition to read the contents
-     * to branches and links that are used to build the BranchNetwork.
+     * Reads a network definition from in and builds a validated network.
+     * Does not close the stream.
      *
      * @param in the input file with contents to parse
      * @return a validated BranchNetwork
@@ -48,7 +48,8 @@ public final class NetworkLoader {
         return BranchNetwork.of(file.branches(), file.links());
     }
 
-    /** A loader that rejects anything the file format does not define. */
+    /** A loader that rejects unknown fields, missing fields, a null or missing fee,
+     * and a fee written as a decimal. */
     public static NetworkLoader strict() {
         return new NetworkLoader(JsonMapper.builder()
                 .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

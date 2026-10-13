@@ -143,7 +143,7 @@ class DijkstraRouteFinderTest {
     }
 
     @Test
-    void givenStaleQueueEntry_whenFindingRouteBeyondIt_thenSkipsStaleEntryAndReturnsCheapestRoute() {
+    void givenStaleQueueEntry_whenFindingRouteBeyondIt_thenStillReturnsCheapestRoute() {
         // given: D is first queued at 55 via B, then at 35 via C and E, leaving a stale entry at 55
         // that is polled before G (55) because "D" sorts before "G"
         BranchNetwork network = BranchNetwork.of(
