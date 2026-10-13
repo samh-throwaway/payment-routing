@@ -8,7 +8,7 @@ public final class InvalidBranchException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Creates an InvalidBranchException with the reasoning.
+     * Creates the exception with a message saying what is wrong with the id.
      *
      * @param message what is wrong with the id; must not repeat the raw input
      */

@@ -19,7 +19,7 @@ public final class NetworkLoader {
     private final JsonMapper mapper;
 
     /**
-     * Public constructor for building the NetworkLoader object.
+     * Creates a loader that parses network files with the given mapper.
      *
      * @param mapper the mapper used to read the file
      */

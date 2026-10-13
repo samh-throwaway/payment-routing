@@ -22,7 +22,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     /**
-     * Public constructor for PaymentController.
+     * Creates the controller. It only passes requests to paymentService.
      *
      * @param paymentService the service that finds the cheapest route
      */

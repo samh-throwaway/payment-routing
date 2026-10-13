@@ -10,8 +10,8 @@ package com.example.paymentrouting.config;
  * describes breaks the rules (for example a negative fee or a link to
  * an unknown branch).
  *
- * <p>Unchecked, and it always carries the underlying parser error as
- * its cause.
+ * <p>Unchecked, and it always carries the underlying cause (a parser error,
+ * or the failure to open the file).
  */
 public final class NetworkLoadException extends RuntimeException {
 

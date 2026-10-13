@@ -31,9 +31,8 @@ public final class DijkstraRouteFinder implements RouteFinder {
     private final BranchNetwork network;
 
     /**
-     * Public constructor for initializing Dijkstra's algorithm. Takes
-     * a non-null BranchNetwork object that contains the nodes and all
-     * their costs.
+     * Creates a route finder that searches the given network. The network
+     * must be immutable, because it is shared by every call.
      *
      * @param branchNetwork the validated, immutable BranchNetwork
      */

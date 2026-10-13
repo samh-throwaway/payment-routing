@@ -23,7 +23,7 @@ public final class CheapestRoutePaymentService implements PaymentService {
     private final RouteFinder routeFinder;
 
     /**
-     * Constructor for the CheapestRoutePaymentService.
+     * Creates the service from the network it checks ids against and the finder it delegates to.
      *
      * @param network the branch network, used to check that ids exist
      * @param routeFinder the algorithm that finds the cheapest route

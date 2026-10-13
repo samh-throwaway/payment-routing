@@ -3,7 +3,7 @@ package com.example.paymentrouting.algorithm;
 /**
  * Finds the cheapest route between two branches of a network.
  *
- * <p>Implementation must be safe to call from many threads at once.
+ * <p>Implementations must be safe to call from many threads at once.
  */
 public interface RouteFinder {
 

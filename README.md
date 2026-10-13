@@ -13,14 +13,16 @@ of branches, or nothing if the destination cannot be reached.
 
 The example network from the brief:
 
-| Branch | Fee |   | Links |
-|---|---|---|---|
-| A | 5 | | A->B, A->C, C->B, B->D |
-| B | 50 | | C->E, D->E, E->D |
-| C | 10 | | D->F, E->F |
-| D | 10 | | |
-| E | 20 | | |
-| F | 5 | | |
+| Branch | Fee |
+|---|---|
+| A | 5 |
+| B | 50 |
+| C | 10 |
+| D | 10 |
+| E | 20 |
+| F | 5 |
+
+Links: A->B, A->C, C->B, B->D, C->E, D->E, E->D, D->F, E->F.
 
 For example, A to D is `A,C,E,D` at a cost of 35 (5 + 10 + 20).
 
@@ -29,7 +31,7 @@ For example, A to D is `A,C,E,D` at a cost of 35 (5 + 10 + 20).
 Requires Java 17. On Windows use `mvnw.cmd` instead of `./mvnw`.
 
 ```
-./mvnw test                       # run the tests (135)
+./mvnw test                       # run the tests (140)
 ./mvnw spring-boot:run            # start the API on http://localhost:8080
 ./mvnw test -Dgroups=performance -DexcludedGroups=none   # also run the timing test
 ```
@@ -99,7 +101,7 @@ The file is read strictly and the application refuses to start on a bad one:
 
 Equal-cost routes are broken in a fixed order: fewest hops first. 
 Any tie left after that is settled the same way every time, 
-because the search settles branches in a fixed order (cost, then hops, then branch name).
+because the search settles branches in a fixed order (cost, then hops, then branch id).
 
 ## How it scales
 
@@ -140,7 +142,7 @@ immutable network and swap one reference atomically.
 | Add branches and links without code changes | `NetworkLoaderTest` (including the packaged `network.json`), `BranchNetworkTest`                                         |
 | Consider performance and show how it scales | `RoutingPerformanceTest` (tagged `performance`), table above                                                             |
 | Thread safe | `PaymentServiceConcurrencyTest`, the repeated-call test in `DijkstraRouteFinderTest`, `BranchNetworkTest` (immutability) |
-| Functional tests | All of the above, 135 tests in the default run                                                                           |
+| Functional tests | All of the above, 140 tests in the default run                                                                           |
 | Library assessment | Libraries section                                                                                                        |
 
 ## Libraries

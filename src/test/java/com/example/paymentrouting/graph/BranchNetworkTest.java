@@ -299,7 +299,7 @@ class BranchNetworkTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {"", " ", "a", "A B", " A", "A_B", "A.B", "À", "ABCDEFGHIJKLMNOPQRSTU"})
+        @ValueSource(strings = {"", " ", "a", "A B", " A", "A_B", "A.B", "\u00C0", "ABCDEFGHIJKLMNOPQRSTU"})
         void givenInvalidBranchIds_whenBranchIdsAreMalformedInvalid_thenReportsInvalidBranchIds(String branchId) {
             // given
             List<Branch> branches = List.of(new Branch(branchId, 1));
