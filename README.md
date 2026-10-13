@@ -29,7 +29,7 @@ For example, A to D is `A,C,E,D` at a cost of 35 (5 + 10 + 20).
 Requires Java 17. On Windows use `mvnw.cmd` instead of `./mvnw`.
 
 ```
-./mvnw test                       # run the tests (118)
+./mvnw test                       # run the tests (135)
 ./mvnw spring-boot:run            # start the API on http://localhost:8080
 ./mvnw test -Dgroups=performance -DexcludedGroups=none   # also run the timing test
 ```
@@ -131,16 +131,16 @@ immutable network and swap one reference atomically.
 
 ## Requirements and the tests that cover them
 
-| Requirement from the brief | Where it is tested |
-|---|---|
-| Cheapest route as a comma separated string, or null | `DijkstraRouteFinderTest`, `CheapestRoutePaymentServiceTest`, `RouteApiEndToEndTest` |
-| Directed links, fee on leaving, destination is free, A to A costs 0 | `DijkstraRouteFinderTest` (the example network cases), `BranchNetworkTest` |
-| REST API with input validation | `PaymentControllerTest`, `RouteApiEndToEndTest`, `BranchIdsTest` |
-| Add branches and links without code changes | `NetworkLoaderTest` (including the packaged `network.json`), `BranchNetworkTest` |
-| Consider performance and show how it scales | `RoutingPerformanceTest` (tagged `performance`), table above |
+| Requirement from the brief | Where it is tested                                                                                                       |
+|---|--------------------------------------------------------------------------------------------------------------------------|
+| Cheapest route as a comma separated string, or null | `DijkstraRouteFinderTest`, `CheapestRoutePaymentServiceTest`, `RouteApiEndToEndTest`                                     |
+| Directed links, fee on leaving, destination is free, A to A costs 0 | `DijkstraRouteFinderTest` (the example network cases), `BranchNetworkTest`                                               |
+| REST API with input validation | `PaymentControllerTest`, `RouteApiEndToEndTest`, `BranchIdsTest`                                                         |
+| Add branches and links without code changes | `NetworkLoaderTest` (including the packaged `network.json`), `BranchNetworkTest`                                         |
+| Consider performance and show how it scales | `RoutingPerformanceTest` (tagged `performance`), table above                                                             |
 | Thread safe | `PaymentServiceConcurrencyTest`, the repeated-call test in `DijkstraRouteFinderTest`, `BranchNetworkTest` (immutability) |
-| Functional tests | All of the above, 118 tests in the default run |
-| Library assessment | Libraries section |
+| Functional tests | All of the above, 135 tests in the default run                                                                           |
+| Library assessment | Libraries section                                                                                                        |
 
 ## Libraries
 
