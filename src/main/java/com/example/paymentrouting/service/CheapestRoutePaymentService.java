@@ -13,7 +13,7 @@ import java.util.Objects;
  * <p>Validates both ids (format first, then existence), so callers get a
  * meaningful {@link InvalidBranchException} or {@link UnknownBranchException}
  * instead of a failure from deeper layers. Thread safe: holds only two final,
- * immutable-or-stateless collaborators and keeps no per-request state.
+ * immutable or thread-safe collaborators and keeps no per-request state.
  *
  * <p>Used by the REST controller.
  */

@@ -161,7 +161,7 @@ class NetworkLoaderTest {
         }
     }
 
-    private static ByteArrayInputStream stream(String json){
+    private static ByteArrayInputStream stream(String json) {
         return new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -106,9 +106,10 @@ public final class DijkstraRouteFinder implements RouteFinder {
     }
 
     /** One item in the priority queue: the cost of reaching {@code branch} by
-     * some route found so far. It is a snapshot. If a cheaper route to the
-     * branch is found later, a new entry is queued and this one becomes
-     * stale; it is skipped when polled. {@code hops} is the number of links
-     * used to reach the branch; it breaks ties between equal costs.*/
+     * some route found so far. It is a snapshot. If a better route to the
+     * branch is found later (cheaper, or equal cost with fewer hops), a new
+     * entry is queued and this one becomes stale; it is skipped when polled.
+     * {@code hops} is the number of links used to reach the branch; it breaks
+     * ties between equal costs. */
     private record QueueEntry(String branch, long cost, int hops) {}
 }

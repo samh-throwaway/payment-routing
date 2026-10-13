@@ -33,7 +33,10 @@ Requires Java 17. On Windows use `mvnw.cmd` instead of `./mvnw`.
 ```
 ./mvnw test                       # run the tests (142)
 ./mvnw spring-boot:run            # start the API on http://localhost:8080
-./mvnw test -Dgroups=performance -DexcludedGroups=none   # also run the timing test
+
+curl "http://localhost:8080/api/v1/routes?origin=A&destination=D"   # with the API running: {"route":"A,C,E,D"}
+
+./mvnw test -Dgroups=performance -DexcludedGroups=none   # run only the timing test
 ```
 
 ## The API
@@ -163,7 +166,7 @@ All of these come through Spring Boot's dependency management, with no extra lib
 | Hamcrest | 3.0 | Test matchers (`nullValue`) | BSD-3-Clause |
 | JsonPath | 2.10.0 | Reading JSON in controller and end-to-end tests | Apache 2.0 |
 
-All are widely used, actively maintained, and under standard open-source licenses.
+All are widely used, actively maintained, and under standard open-source licences.
 
 Considered and left out:
 

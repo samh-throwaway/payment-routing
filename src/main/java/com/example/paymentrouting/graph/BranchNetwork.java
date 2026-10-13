@@ -169,7 +169,7 @@ public final class BranchNetwork {
         return validLinks;
     }
 
-    /** Combines the validated fees and links into the final immutable network.*/
+    /** Combines the validated fees and links into the final immutable network. */
     private static BranchNetwork build(Map<String, Long> fees, Map<String, SortedSet<String>> outgoing) {
         Map<String, Node> nodes = new HashMap<>();
         for (Map.Entry<String, Long> entry : fees.entrySet()) {
@@ -242,8 +242,10 @@ public final class BranchNetwork {
         return id != null && BRANCH_FORMAT.matcher(id).matches();
     }
 
-    /** Checks whether the endpoint branch exists in knownIds. Returns true if it does, false if
-     * id is null or knownIds doesn't contain the Branch ID.*/
+    /**
+     * Checks one end of a link. Returns true if {@code id} is present and is a known branch.
+     * Otherwise, adds the reason ("missing" or "not known") to {@code errors} and returns false.
+     */
     private static boolean checkEndpoint(String id, String field, String where, Set<String> knownIds,
                                          List<String> errors) {
         if (id == null) {

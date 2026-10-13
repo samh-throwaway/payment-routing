@@ -5,7 +5,7 @@ import com.example.paymentrouting.graph.BranchNetwork;
 import java.util.Locale;
 
 /**
- * Turns a raw branch id from outside the application into the recognized form
+ * Turns a raw branch id from outside the application into the recognised form
  * used inside the network, or rejects it.
  *
  * <p>Trims, upper-cases (locale independent) and checks the id format. The
@@ -24,7 +24,7 @@ public final class BranchIds {
     }
 
     /**
-     * Converts a raw branch id from outside the application to the recognized
+     * Converts a raw branch id from outside the application to the recognised
      * form used inside the network.
      *
      * @param raw the id as received, possibly padded or in lower case

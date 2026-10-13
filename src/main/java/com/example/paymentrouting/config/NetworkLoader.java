@@ -28,10 +28,10 @@ public final class NetworkLoader {
     }
 
     /**
-     * Reads a network definition from in and builds a validated network.
+     * Reads a network definition from {@code in} and builds a validated network.
      * Does not close the stream.
      *
-     * @param in the input file with contents to parse
+     * @param in the JSON network definition to read
      * @return a validated BranchNetwork
      * @throws InvalidNetworkException if the content describes an invalid network
      * @throws NetworkLoadException if the input is not valid JSON or does not
@@ -60,6 +60,6 @@ public final class NetworkLoader {
     }
 
     /** Shape of the network.json file which includes the graph branches and links.
-     * Raw input only; BranchNetwork#of validates.*/
+     * Raw input only; {@link BranchNetwork#of} validates. */
     private record NetworkFile(List<Branch> branches, List<Link> links) {}
 }
