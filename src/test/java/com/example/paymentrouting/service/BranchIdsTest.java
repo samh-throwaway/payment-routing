@@ -24,7 +24,8 @@ class BranchIdsTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @ValueSource(strings = {" ", "A B", "A,B", "A_B", "ABCDEFGHIJKLMNOPQRSTU", "\u00C9"})
+    @ValueSource(strings = {" ", "A B", "A,B", "A_B", "ABCDEFGHIJKLMNOPQRSTU", "É",
+            "ß", "straße", "ı", "ſ", "ﬁ"})
     void givenUnusableInput_whenNormalising_thenThrowsInvalidBranchException(String raw) {
         // when - then
         assertThatThrownBy(() -> BranchIds.normalise(raw))

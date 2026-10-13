@@ -11,11 +11,14 @@ import java.util.Locale;
  * <p>Trims, upper-cases (locale independent) and checks the id format. The
  * format rule itself lives in {@link BranchNetwork#isValidId}, so there is one
  * definition of a valid id. Error messages do not repeat the input, because it
- * is untrusted and can be arbitrarily long.
+ * is untrusted and can be arbitrarily long. Non-ASCII input is rejected before
+ * upper-casing, because upper-casing some characters produces ASCII letters.
  *
  * <p>Stateless utility class. Used by {@link CheapestRoutePaymentService}.
  */
 public final class BranchIds {
+
+    private static final String INVALID_FORMAT = "branch id must be 1-20 characters of A-Z, 0-9 or '-'";
 
     private BranchIds() {
     }
@@ -33,10 +36,13 @@ public final class BranchIds {
         if (raw == null || raw.isBlank()) {
             throw new InvalidBranchException("branch id is required");
         }
-        String id = raw.strip().toUpperCase(Locale.ROOT);
+        String stripped = raw.strip();
+        if (!stripped.chars().allMatch(c -> c < 0x80)) {
+            throw new InvalidBranchException(INVALID_FORMAT);
+        }
+        String id = stripped.toUpperCase(Locale.ROOT);
         if (!BranchNetwork.isValidId(id)) {
-            throw new InvalidBranchException(
-                    "branch id must be 1-20 characters of A-Z, 0-9 or '-'");
+            throw new InvalidBranchException(INVALID_FORMAT);
         }
         return id;
     }
