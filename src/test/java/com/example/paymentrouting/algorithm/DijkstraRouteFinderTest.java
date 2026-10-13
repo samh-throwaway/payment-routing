@@ -109,7 +109,7 @@ class DijkstraRouteFinderTest {
     }
 
     @Test
-    void givenTwoEqualCostAndHopsRoutes_whenFindingRoute_thenAlphabeticallyFirstBranchWins() {
+    void givenTwoEqualCostAndHopsRoutes_whenFindingRoute_thenFirstSettledPredecessorWins() {
         // given
         List<Branch> branches = List.of(new Branch("A", 1), new Branch("Y", 1),
                 new Branch("Z", 1), new Branch("M", 1), new Branch("B", 1),

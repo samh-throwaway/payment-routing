@@ -97,8 +97,9 @@ The file is read strictly and the application refuses to start on a bad one:
 - `rest`: the controller and the error handler.
 - `config`: loads `network.json` at startup and wires everything together.
 
-Equal-cost routes are broken in a fixed order: fewest hops first, then branch
-name. The same request always gives the same answer.
+Equal-cost routes are broken in a fixed order: fewest hops first. 
+Any tie left after that is settled the same way every time, 
+because the search settles branches in a fixed order (cost, then hops, then branch name).
 
 ## How it scales
 

@@ -10,8 +10,9 @@ public interface RouteFinder {
     /**
      * Finds the cheapest route from {@code origin} to {@code destination}.
      *
-     * <p>Among equal-cost routes, the one with fewer hops wins; remaining ties
-     * are broken by branch name.
+     * <p>Among equal-cost routes, the one with fewer hops wins; any remaining
+     * tie is resolved deterministically, in the order the search settles branches
+     * (cost, then hops, then branch id).
      *
      * @param origin the branch the payment starts at; must exist in the network
      * @param destination the branch the payment must reach; must exist in the network
