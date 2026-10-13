@@ -11,6 +11,8 @@ public interface PaymentService {
     /**
      * Finds the cheapest route for a payment between two branches.
      *
+     * @param origin the branch the route starts at; must exist in the network
+     * @param destination the branch the route finishes at; must exist in the network
      * @return the branch ids in order, comma separated (for example "A,C,E,D"),
      *         or null if the destination cannot be reached
      * @throws InvalidBranchException if an id is missing or malformed

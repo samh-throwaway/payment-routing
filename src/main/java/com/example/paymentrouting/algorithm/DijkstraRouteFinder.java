@@ -42,17 +42,6 @@ public final class DijkstraRouteFinder implements RouteFinder {
         this.network = branchNetwork;
     }
 
-    /**
-     * The main method called to traverse through the validated BranchNetwork
-     * from origin to destination.
-     *
-     * @param origin the branch the payment starts at; must exist in the network
-     * @param destination the branch the payment must reach; must exist in the network
-     * @return the cheapest Route from origin to destination, or null if destination
-     * never settled
-     * @throws IllegalArgumentException if the passed in origin or destination
-     * doesn't exist in the shared BranchNetwork
-     */
     @Override
     public Route find(String origin, String destination) {
         if (!network.contains(origin)) {
@@ -120,7 +109,7 @@ public final class DijkstraRouteFinder implements RouteFinder {
     /** One item in the priority queue: the cost of reaching {@code branch} by
      * some route found so far. It is a snapshot. If a cheaper route to the
      * branch is found later, a new entry is queued and this one becomes
-     * stale; it is skipped when polled. hops is the number of links
-     * used to reach the branch;it breaks ties between equal costs.*/
+     * stale; it is skipped when polled. {@code hops} is the number of links
+     * used to reach the branch; it breaks ties between equal costs.*/
     private record QueueEntry (String branch, long cost, int hops) {}
 }

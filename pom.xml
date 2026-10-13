@@ -11,8 +11,10 @@
 	<groupId>com.example</groupId>
 	<artifactId>payment-routing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>Payment Routing Application</name>
+	<description>REST service that finds the cheapest payment route between bank branches
+		using Dijkstra's algorithm on a weighted, directed graph with non-negative fees.
+	</description>
 	<url/>
 	<licenses>
 		<license/>

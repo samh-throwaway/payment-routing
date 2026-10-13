@@ -13,22 +13,23 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Spring wiring: builds the network from the configured JSON file at startup
+ * and exposes the route finder and payment service as beans.
+ *
+ * <p>The file location comes from {@code payment.network.location}, defaulting
+ * to {@code classpath:network.json}. A bad file stops the application starting.
+ */
 @Configuration(proxyBeanMethods = false)
 public class NetworkConfiguration {
 
-    /**
-     * Spring wiring: builds the network from the configured JSON file at startup
-     * and exposes the route finder and payment service as beans.
-     *
-     * <p>The file location comes from {@code payment.network.location}, defaulting
-     * to {@code classpath:network.json}. A bad file stops the application starting.
-     */
     @Bean
     public BranchNetwork branchNetwork(
             @Value("${payment.network.location:classpath:network.json}") Resource location) {
         try (InputStream in = location.getInputStream()) {
             return NetworkLoader.strict().load(in);
         } catch (IOException e) {
+            // IOException = file missing/unreadable; a malformed file is reported by the loader itself
             throw new NetworkLoadException(
                     "Network file could not be opened: " + location, e);
         }
