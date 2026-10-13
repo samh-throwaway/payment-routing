@@ -347,6 +347,30 @@ class BranchNetworkTest {
             // then
             assertThat(errors).containsExactly("branches[0]: fee -1 of 'A' must not be negative");
         }
+
+        @Test
+        void givenFeesWhoseSumOverflowsLong_whenBuildingNetwork_thenReportsSumOfFees() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", Long.MAX_VALUE), new Branch("B", 1));
+
+            // when
+            List<String> errors = errorsFor(branches, List.of());
+
+            // then
+            assertThat(errors).singleElement(STRING).contains("sum of all fees");
+        }
+
+        @Test
+        void givenFeesWhoseSumIsExactlyLongMax_whenBuildingNetwork_thenIsAccepted() {
+            // given
+            List<Branch> branches = List.of(new Branch("A", Long.MAX_VALUE - 1), new Branch("B", 1));
+
+            // when
+            BranchNetwork network = BranchNetwork.of(branches, List.of());
+
+            // then
+            assertThat(network.fee("A")).isEqualTo(Long.MAX_VALUE - 1);
+        }
     }
 
     @Nested

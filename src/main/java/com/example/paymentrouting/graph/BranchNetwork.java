@@ -52,6 +52,7 @@ public final class BranchNetwork {
     public static BranchNetwork of(List<Branch> branches, List<Link> links) {
         List<String> localErrors = new ArrayList<>();
         Map<String, Long> fees = validateBranches(branches, localErrors);
+        validateFeeTotal(fees, localErrors);
         Map<String, SortedSet<String>> validLinks = validateLinks(links, fees.keySet(), localErrors);
         if (!localErrors.isEmpty()) {
             throw new InvalidNetworkException(localErrors);
@@ -100,6 +101,26 @@ public final class BranchNetwork {
         }
 
         return fees;
+    }
+
+    /**
+     * Checks that the fees of all branches add up to no more than a long can hold.
+     * Dijkstra only adds fees along a path that visits each branch at most once, so
+     * no route cost can be larger than this total, and one check here means the
+     * cost sum can never overflow while serving requests.
+     */
+    private static void validateFeeTotal(Map<String, Long> fees, List<String> errors) {
+        long total = 0;
+        for (long fee : fees.values()) {
+            if (fee < 0) {
+                continue; // already reported as negative
+            }
+            if (total > Long.MAX_VALUE - fee) {
+                errors.add("the sum of all fees must not exceed " + Long.MAX_VALUE);
+                return;
+            }
+            total += fee;
+        }
     }
 
     /**
