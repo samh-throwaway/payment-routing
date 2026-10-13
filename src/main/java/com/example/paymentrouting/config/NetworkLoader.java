@@ -5,6 +5,7 @@ import com.example.paymentrouting.graph.BranchNetwork;
 import com.example.paymentrouting.graph.InvalidNetworkException;
 import com.example.paymentrouting.graph.Link;
 import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.InputStream;
@@ -45,6 +46,16 @@ public final class NetworkLoader {
                     + e.getOriginalMessage(), e);
         }
         return BranchNetwork.of(file.branches(), file.links());
+    }
+
+    /** A loader that rejects anything the file format does not define. */
+    public static NetworkLoader strict() {
+        return new NetworkLoader(JsonMapper.builder()
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+                .enable(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES)
+                .disable(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+                .build());
     }
 
     /** Shape of the network.json file which includes the graph branches and links.
