@@ -216,6 +216,11 @@ public final class BranchNetwork {
         return node;
     }
 
+    /** Whether {@code id} has the format every branch id must have. */
+    public static boolean isValidId(String id) {
+        return id != null && BRANCH_FORMAT.matcher(id).matches();
+    }
+
     /** Checks whether the endpoint branch exists in the BranchNetwork. Returns true if does, false if
      * id is null or BranchNetwork doesn't contain the Branch ID.*/
     private static boolean checkEndpoint(String id, String field, String where, Set<String> knownIds,
