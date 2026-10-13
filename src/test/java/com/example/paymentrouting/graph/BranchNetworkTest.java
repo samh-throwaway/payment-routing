@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
@@ -577,6 +578,25 @@ class BranchNetworkTest {
             assertThat(exception.getMessage())
                     .startsWith("Invalid branch network (1 error):")
                     .contains("branches[0]: fee -5 of 'A' must not be negative");
+        }
+    }
+
+    @Nested
+    class IdFormat {
+
+        @ParameterizedTest
+        @ValueSource(strings = {"A", "Z9", "BRANCH-01", "ABCDEFGHIJKLMNOPQRST"})
+        void givenWellFormedId_whenCheckingFormat_thenIsValid(String id) {
+            // when - then
+            assertThat(BranchNetwork.isValidId(id)).isTrue();
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {" ", "a", "A B", "A_B", "\u00C4", "ABCDEFGHIJKLMNOPQRSTU"})
+        void givenMalformedId_whenCheckingFormat_thenIsNotValid(String id) {
+            // when - then
+            assertThat(BranchNetwork.isValidId(id)).isFalse();
         }
     }
 }

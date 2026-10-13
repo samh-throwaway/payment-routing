@@ -141,4 +141,25 @@ class DijkstraRouteFinderTest {
         assertThat(second).isEqualTo(new Route(List.of("C", "E"), 10));
         assertThat(third).isEqualTo(first);
     }
+
+    @Test
+    void givenStaleQueueEntry_whenFindingRouteBeyondIt_thenSkipsStaleEntryAndReturnsCheapestRoute() {
+        // given: D is first queued at 55 via B, then at 35 via C and E, leaving a stale entry at 55
+        // that is polled before G (55) because "D" sorts before "G"
+        BranchNetwork network = BranchNetwork.of(
+                List.of(new Branch("A", 5), new Branch("B", 50), new Branch("C", 10),
+                        new Branch("D", 10), new Branch("E", 20), new Branch("F", 5),
+                        new Branch("G", 1)),
+                List.of(new Link("A", "B"), new Link("A", "C"), new Link("C", "B"),
+                        new Link("B", "D"), new Link("C", "E"), new Link("D", "E"),
+                        new Link("E", "D"), new Link("D", "F"), new Link("E", "F"),
+                        new Link("B", "G")));
+        DijkstraRouteFinder routeFinder = new DijkstraRouteFinder(network);
+
+        // when
+        Route route = routeFinder.find("A", "G");
+
+        // then
+        assertThat(route).isEqualTo(new Route(List.of("A", "B", "G"), 55));
+    }
 }
