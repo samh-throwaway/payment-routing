@@ -67,7 +67,7 @@ Example error:
 ```
 
 The Java entry point required by the brief is
-`PaymentService.processPayment(origin, destination)`. It returns the route as a
+`PaymentService.processPayment(originBranch, destinationBranch)`. It returns the route as a
 comma separated string such as `"A,C,E,D"`, or `null` if there is no route.
 
 ## Changing the network

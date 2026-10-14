@@ -40,9 +40,9 @@ public final class CheapestRoutePaymentService implements PaymentService {
      * up, so a malformed id is always reported ahead of an unknown one.
      */
     @Override
-    public String processPayment(String origin, String destination) {
-        String from = BranchIds.normalise(origin);
-        String to = BranchIds.normalise(destination);
+    public String processPayment(String originBranch, String destinationBranch) {
+        String from = BranchIds.normalise(originBranch);
+        String to = BranchIds.normalise(destinationBranch);
         requireKnown(from);
         requireKnown(to);
 
