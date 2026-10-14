@@ -1,0 +1,9 @@
+{
+  "branches": [
+    { "id": "A", "fee": -1 },
+    { "id": "B", "fee": 5 }
+  ],
+  "links": [
+    { "from": "A", "to": "X" }
+  ]
+}

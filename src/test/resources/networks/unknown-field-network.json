@@ -1,0 +1,6 @@
+{
+  "branches": [
+    { "id": "A", "fee": 5, "location": "GB" }
+  ],
+  "links": []
+}

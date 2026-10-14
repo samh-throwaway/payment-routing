@@ -1,4 +1,4 @@
-package com.example.paymentrouting;
+package com.example.paymentrouting.integrationtests;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class RouteApiEndToEndTest {
+class RouteApiIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
