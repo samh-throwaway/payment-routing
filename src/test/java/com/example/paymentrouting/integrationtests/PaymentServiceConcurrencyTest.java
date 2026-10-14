@@ -1,5 +1,6 @@
-package com.example.paymentrouting;
+package com.example.paymentrouting.integrationtests;
 
+import com.example.paymentrouting.TestNetworks;
 import com.example.paymentrouting.algorithm.DijkstraRouteFinder;
 import com.example.paymentrouting.graph.BranchNetwork;
 import com.example.paymentrouting.service.CheapestRoutePaymentService;

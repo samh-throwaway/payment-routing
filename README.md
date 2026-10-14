@@ -31,7 +31,7 @@ For example, A to D is `A,C,E,D` at a cost of 35 (5 + 10 + 20).
 Requires Java 17. On Windows use `mvnw.cmd` instead of `./mvnw`.
 
 ```
-./mvnw test                       # run the tests (149)
+./mvnw test                       # run the tests (148)
 ./mvnw spring-boot:run            # start the API on http://localhost:8080
 
 curl "http://localhost:8080/api/v1/routes?origin=A&destination=D"   # with the API running: {"route":"A,C,E,D"}
@@ -147,7 +147,7 @@ immutable network and swap one reference atomically.
 | Add branches and links without code changes                         | `NetworkLoaderTest` (including the packaged `network.json`), `BranchNetworkTest`, `CustomNetworkFileIntegrationTest`, `ApplicationStartupTest`                                                                                                                               |
 | Consider performance and show how it scales                         | `RoutingPerformanceTest` (tagged `performance`), table above                                                                                                                                                                                                                 |
 | Thread safe                                                         | By design (see More requests at once); exercised by `PaymentServiceConcurrencyTest`, the repeated-call test in `DijkstraRouteFinderTest`, and `BranchNetworkTest` (immutability).                                                                                            |
-| Functional tests                                                    | `RouteApiFunctionalTest` calls the running server over HTTP. `ApplicationStartupTest` checks that a bad network file stops startup. `RouteApiIntegrationTest` and `CustomNetworkFileIntegrationTest` run the full application through MockMvc. 149 tests in the default run. |
+| Functional tests                                                    | `RouteApiFunctionalTest` calls the running server over HTTP. `ApplicationStartupTest` checks that a bad network file stops startup. `RouteApiIntegrationTest` and `CustomNetworkFileIntegrationTest` run the full application through MockMvc. 148 tests in the default run. |
 | Library assessment                                                  | Libraries section                                                                                                                                                                                                                                                            |
 
 ## Libraries
